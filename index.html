@@ -1,294 +1,364 @@
-<!DOCTYPE html><html lang="tr">
+<!DOCTYPE html>
+<html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hakediş Mesaj Paneli</title>
-  <style>
-    :root{
-      --bg:#070b1f;--card:rgba(255,255,255,.085);--card2:rgba(255,255,255,.13);
-      --line:rgba(255,255,255,.15);--text:#f8fbff;--muted:#aab6d3;
-      --blue:#4db8ff;--purple:#8b5cf6;--green:#25d366;--gold:#fbbf24;--red:#fb7185;
-      --shadow:0 28px 90px rgba(0,0,0,.42);--radius:26px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;min-height:100vh;font-family:Segoe UI,Arial,sans-serif;color:var(--text);
-      background:radial-gradient(circle at 10% 0%,rgba(77,184,255,.25),transparent 32%),radial-gradient(circle at 90% 10%,rgba(139,92,246,.30),transparent 30%),linear-gradient(135deg,#050714,#07142c 55%,#130b29);
-    }
-    body:before{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;opacity:.8}
-    .app{max-width:1180px;margin:auto;padding:20px 14px 70px;position:relative;z-index:1}
-    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border:1px solid var(--line);border-radius:22px;background:rgba(255,255,255,.06);backdrop-filter:blur(18px);box-shadow:var(--shadow);margin-bottom:16px}
-    .brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:16px;background:linear-gradient(135deg,var(--blue),var(--purple));display:grid;place-items:center;font-size:24px}.brand b{font-size:18px}.brand span{display:block;color:var(--muted);font-size:12px;margin-top:2px}
-    .hero{padding:32px;border:1px solid var(--line);border-radius:32px;background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.045));box-shadow:var(--shadow);backdrop-filter:blur(18px)}
-    .pill{display:inline-flex;padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.07);font-size:13px;color:#dcecff}
-    h1{margin:16px 0 8px;font-size:clamp(30px,5vw,58px);line-height:1;letter-spacing:-1.7px}.grad{background:linear-gradient(90deg,#fff,#92d9ff,#c4b5fd,#fbbf24);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{margin:0;color:var(--muted);line-height:1.6;max-width:820px}
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}.stat{padding:16px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.07)}.stat b{display:block;font-size:24px}.stat span{font-size:12px;color:var(--muted)}
-    .grid{display:grid;grid-template-columns:370px 1fr;gap:16px;margin-top:16px}.card{border:1px solid var(--line);border-radius:var(--radius);background:rgba(14,20,40,.76);box-shadow:var(--shadow);backdrop-filter:blur(18px);overflow:hidden}.head{padding:18px 18px 0}.head h2{margin:0;font-size:19px}.head p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.45}.body{padding:18px}
-    label{display:block;margin:13px 0 7px;font-size:12px;font-weight:800;color:#dfe8ff}input,textarea{width:100%;border:1px solid rgba(255,255,255,.15);background:rgba(2,6,23,.66);color:var(--text);outline:none;border-radius:15px;padding:12px 13px;font-size:14px}textarea{min-height:90px;resize:vertical;line-height:1.45}input:focus,textarea:focus{border-color:rgba(77,184,255,.8);box-shadow:0 0 0 4px rgba(77,184,255,.12)}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btns{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}button,a.btn{border:0;text-decoration:none;cursor:pointer;color:white;border-radius:15px;padding:11px 13px;font-weight:900;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.18s}button:hover,a.btn:hover{transform:translateY(-2px);filter:brightness(1.07)}.primary{background:linear-gradient(135deg,var(--blue),var(--purple))}.green{background:linear-gradient(135deg,#22c55e,var(--green));color:#05220e}.ghost{background:rgba(255,255,255,.08);border:1px solid var(--line)}.gold{background:linear-gradient(135deg,#f59e0b,var(--gold));color:#231800}.red{background:linear-gradient(135deg,#fb7185,#ef4444)}
-    .toolbar{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}.search{max-width:320px}.people{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.person{padding:16px;border:1px solid rgba(255,255,255,.13);border-radius:22px;background:linear-gradient(135deg,rgba(255,255,255,.095),rgba(255,255,255,.045));cursor:pointer;transition:.18s}.person:hover{transform:translateY(-3px);border-color:rgba(77,184,255,.45)}.person-name{font-weight:950;font-size:16px}.person-phone{color:var(--muted);font-size:12px;margin-top:5px}.person-last{margin-top:12px;padding:9px 10px;border-radius:14px;background:rgba(255,255,255,.075);font-size:12px;color:#dce7ff;line-height:1.45}.empty{border:1px dashed rgba(255,255,255,.26);border-radius:22px;color:var(--muted);text-align:center;padding:28px;grid-column:1/-1}.note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:10px}
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;padding:14px;z-index:50}.modal.show{display:flex}.modal-card{width:min(900px,100%);max-height:92vh;overflow:auto;background:#0b1022;border:1px solid var(--line);border-radius:30px;box-shadow:var(--shadow)}.modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:20px;border-bottom:1px solid var(--line)}.modal-head h2{margin:0}.modal-head p{margin:5px 0 0;color:var(--muted);font-size:13px}.modal-body{padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px}.preview{white-space:pre-wrap;background:rgba(0,0,0,.30);border:1px solid var(--line);border-radius:18px;padding:14px;font-size:13px;line-height:1.55;color:#eff6ff;min-height:330px}.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(18px);opacity:0;background:#091225;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:16px;padding:12px 17px;transition:.22s;z-index:99}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    @media(max-width:960px){.grid,.modal-body{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.people{grid-template-columns:repeat(2,1fr)}.search{max-width:none;width:100%}}
-    @media(max-width:540px){.topbar{flex-direction:column;align-items:flex-start}.row,.stats,.people{grid-template-columns:1fr}button,a.btn{width:100%}.hero{padding:24px}.modal-head{flex-direction:column}.app{padding:14px 10px 60px}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delivera Muhasebe Hakediş Paneli</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#07111f,#1d3557,#0b132b);color:white;padding:20px}
+.container{max-width:1200px;margin:auto}
+.hero,.card{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.35);margin-bottom:20px}
+h1{margin:0;font-size:32px}
+p{opacity:.85}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+label{display:block;font-weight:bold;font-size:14px;margin-top:8px}
+input,textarea,select{width:100%;padding:13px;border:none;outline:none;border-radius:14px;margin:8px 0 14px;font-size:15px}
+textarea{min-height:260px;resize:vertical}
+button{border:none;padding:13px 16px;border-radius:14px;font-weight:bold;cursor:pointer;margin:5px 4px 5px 0}
+.primary{background:#00d4ff;color:#06111d}
+.success{background:#37ff8b;color:#062011}
+.danger{background:#ff4d6d;color:white}
+.dark{background:#ffffff22;color:white}
+.person{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border-radius:14px;background:rgba(255,255,255,.08);margin-bottom:10px}
+.person small{opacity:.75}
+.checkbox{width:auto;margin-right:8px;transform:scale(1.2)}
+.preview{background:#07111f;border-radius:16px;padding:15px;white-space:pre-wrap;line-height:1.5;border:1px solid rgba(255,255,255,.12);min-height:250px}
+.list{max-height:520px;overflow:auto;padding-right:5px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mini{font-size:13px;opacity:.75;margin-top:8px}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}h1{font-size:25px}}
+</style>
 </head>
+
 <body>
-  <main class="app">
-    <div class="topbar">
-      <div class="brand"><div class="logo">🧾</div><div><b>Hakediş Mesaj Paneli</b><span>Kişiye tıkla hakedişi gir mesajı hazırla</span></div></div>
-      <div class="btns"><button class="ghost" id="backupBtn">📦 Yedek Al</button><button class="ghost" id="loadBackupBtn">📥 Yedek Yükle</button><input id="backupFile" type="file" accept="application/json" hidden></div>
-    </div><section class="hero">
-  <span class="pill">✨ Muhasebe için pratik sistem</span>
-  <h1><span class="grad">Kişiye bas</span> tarih ve tutarı gir mesaj hazır olsun</h1>
-  <p>Kişiler kart olarak durur. Muhasebeci kişinin üstüne basar. Hakediş tarihi çalışma dönemi ödeme günü ve tutarı girer. Sistem mesajı hazırlar WhatsApp’a gönderilecek hale getirir.</p>
-  <div class="stats">
-    <div class="stat"><b id="statPeople">0</b><span>Kayıtlı kişi</span></div>
-    <div class="stat"><b id="statTotal">0 TL</b><span>Son hakediş toplamı</span></div>
-    <div class="stat"><b id="statDone">0</b><span>Hakediş girilen</span></div>
-    <div class="stat"><b id="statLastDate">-</b><span>Son hakediş tarihi</span></div>
-  </div>
-</section>
+<div class="container">
 
-<div class="grid">
-  <section class="card">
-    <div class="head"><h2>👤 Kişi Ekle</h2><p>Kişiyi bir defa kaydet sonra kartına basıp hakediş gir.</p></div>
-    <div class="body">
-      <label>Ad Soyad</label><input id="nameInput" placeholder="Örn: Ahmet Yılmaz">
-      <label>Telefon</label><input id="phoneInput" placeholder="Örn: 0530 000 00 00">
-      <div class="btns"><button class="green" id="addPersonBtn">➕ Kişi Ekle</button><button class="ghost" id="demoBtn">🎯 Örnek Ekle</button></div>
-      <div class="note">Telefon girersen WhatsApp butonu direkt o kişiye mesaj hazırlar.</div>
-    </div>
-  </section>
-
-  <section class="card">
-    <div class="head"><h2>🏢 Sabit Firma Bilgileri</h2><p>Bu bilgiler mesajın altında otomatik görünür.</p></div>
-    <div class="body">
-      <label>Firma Ünvanı</label><input id="companyInput">
-      <div class="row"><div><label>Vergi Dairesi</label><input id="taxOfficeInput"></div><div><label>Vergi No</label><input id="taxNoInput"></div></div>
-      <label>Adres</label><input id="addressInput">
-      <label>Muhasebe WhatsApp</label><input id="accountingInput">
-      <label>Mesaj Sonu Notu</label><textarea id="noteInput"></textarea>
-      <div class="btns"><button class="primary" id="saveCompanyBtn">💾 Firma Bilgilerini Kaydet</button></div>
-    </div>
-  </section>
+<div class="hero">
+<h1>💼 Delivera Muhasebe Hakediş Paneli</h1>
+<p>Kişiyi kaydet sağ taraftan haftalık hakediş tutarını gir WhatsApp mesajını hazırla 🚀</p>
 </div>
 
-<section class="card" style="margin-top:16px">
-  <div class="head"><div class="toolbar"><div><h2>📋 Kişiler</h2><p>Kişinin kartına basınca hakediş giriş ekranı açılır.</p></div><input class="search" id="searchInput" placeholder="Kişi ara..."></div></div>
-  <div class="body"><div class="people" id="peopleList"></div></div>
-</section>
+<div class="grid">
 
-  </main>  <div class="modal" id="settlementModal">
-    <div class="modal-card">
-      <div class="modal-head"><div><h2 id="modalName">Hakediş Oluştur</h2><p id="modalPhone">Telefon</p></div><button class="ghost" id="closeModalBtn">✕ Kapat</button></div>
-      <div class="modal-body">
-        <div>
-          <div class="row"><div><label>Hakediş Tarihi</label><input type="date" id="settlementDateInput"></div><div><label>Fatura Ödeme Günü</label><input type="date" id="payDateInput"></div></div>
-          <div class="row"><div><label>Çalışma Başlangıç</label><input type="date" id="periodStartInput"></div><div><label>Çalışma Bitiş</label><input type="date" id="periodEndInput"></div></div>
-          <label>Hakediş Tutarı</label><input id="amountInput" inputmode="decimal" placeholder="Örn: 7500">
-          <div class="btns"><button class="primary" id="prepareBtn">✨ Mesajı Hazırla</button><button class="ghost" id="copyBtn">📋 Kopyala</button><a class="btn green" id="waBtn" target="_blank" href="#">💬 WhatsApp</a><button class="red" id="deleteBtn">🗑️ Kişiyi Sil</button></div>
-          <div class="note">Mesajı Hazırla dediğinde bu hakediş kişinin geçmişine kaydedilir.</div>
-        </div>
-        <div><label>Hazır Mesaj</label><div class="preview" id="previewBox">Tarihleri ve tutarı girip Mesajı Hazırla butonuna bas.</div></div>
+<div class="card">
+<h2>👤 Kurye / Esnaf Ekle</h2>
+
+<label>İsim Soyisim</label>
+<input id="name" placeholder="Örn: Arda Doğan">
+
+<label>Telefon</label>
+<input id="phone" placeholder="Örn: 05551234567">
+
+<button class="primary" onclick="addPerson()">Kişiyi Kaydet</button>
+
+<hr style="border-color:#ffffff22">
+
+<div class="row">
+<button class="dark" onclick="selectAllPeople()">Tümünü Seç</button>
+<button class="dark" onclick="clearSelections()">Seçimi Temizle</button>
+</div>
+
+<h2>📋 Kayıtlı Kişiler</h2>
+<div id="personList" class="list"></div>
+</div>
+
+<div class="card">
+<h2>🧾 Hakediş Mesajı Hazırla</h2>
+
+<label>Tekli Önizleme İçin Kişi Seç</label>
+<select id="selectedPerson" onchange="loadSelectedAmount(); prepareMessage();"></select>
+
+<label>Seçili Kişinin Bu Haftaki Hakediş Tutarı</label>
+<input id="selectedAmount" placeholder="Örn: 7200" oninput="saveSelectedAmount()">
+
+<label>Hakediş Tarihi</label>
+<input id="hakedisDate" type="date" onchange="prepareMessage()">
+
+<div class="row">
+<div>
+<label>Çalışma Başlangıç Tarihi</label>
+<input id="periodStart" type="date" onchange="prepareMessage()">
+</div>
+
+<div>
+<label>Çalışma Bitiş Tarihi</label>
+<input id="periodEnd" type="date" onchange="prepareMessage()">
+</div>
+</div>
+
+<label>Fatura Ödeme Günü</label>
+<input id="paymentDate" type="date" onchange="prepareMessage()">
+
+<label>Mesaj Şablonu</label>
+<textarea id="template" oninput="prepareMessage()">SAYIN YÜKLENİCİ ESNAF KURYE
+{isim}
+
+HAKEDİŞİNİZ
+{hakedisTarihi} TARİHLİ
+{tutar} TL KDV DAHİL HİZMET BEDELİ
+
+AÇIKLAMA
+{aciklama}
+
+FATURA ÖDEME GÜNÜ
+{odemeGunu}
+
+FATURA BİLGİLERİ
+DELİVERA EKSPRESS KURYE ARACILIK HİZMETLERİ TİCARET LİMİTED ŞİRKETİ
+VD İSTİKLAL
+VD NO 274 228 18 00
+YENİŞEHİR MERSİN
+
+E Arşiv faturanızı muhasebe telefonuna kesinlikle iletiniz
+Muhasebe WP 0530 339 72 01</textarea>
+
+<h3>📨 Önizleme</h3>
+<div id="preview" class="preview">Mesaj burada görünecek</div>
+
+<br>
+
+<button class="success" onclick="sendWhatsApp()">Tek Kişiye WhatsApp Aç</button>
+<button class="primary" onclick="sendBulkWhatsApp()">Seçili Kişileri Sekme Sekme Aç</button>
+<button class="dark" onclick="copyMessage()">Mesajı Kopyala</button>
+
+<div class="mini">Not: Hakediş tutarı seçili kişiye özel kaydedilir ✅</div>
+</div>
+
+</div>
+</div>
+
+<script>
+let people = JSON.parse(localStorage.getItem("people")) || [];
+
+function savePeople(){
+  localStorage.setItem("people", JSON.stringify(people));
+}
+
+function cleanMessage(message){
+  return message
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/[ \t]+$/gm, "")
+    .trim();
+}
+
+function normalizePhone(phone){
+  phone = phone.replace(/\D/g, "");
+  if(phone.startsWith("0")) phone = "90" + phone.substring(1);
+  if(!phone.startsWith("90")) phone = "90" + phone;
+  return phone;
+}
+
+function addPerson(){
+  const name = document.getElementById("name").value.trim();
+  const phoneRaw = document.getElementById("phone").value.trim();
+
+  if(!name || !phoneRaw){
+    alert("İsim ve telefon gir kanka");
+    return;
+  }
+
+  people.push({
+    id: Date.now(),
+    name,
+    phone: normalizePhone(phoneRaw),
+    amount: ""
+  });
+
+  savePeople();
+
+  document.getElementById("name").value = "";
+  document.getElementById("phone").value = "";
+
+  renderPeople();
+}
+
+function deletePerson(id){
+  if(!confirm("Bu kişiyi silmek istiyor musun?")) return;
+
+  people = people.filter(p => p.id !== id);
+  savePeople();
+  renderPeople();
+}
+
+function renderPeople(){
+  const list = document.getElementById("personList");
+  const select = document.getElementById("selectedPerson");
+
+  list.innerHTML = "";
+  select.innerHTML = "";
+
+  if(people.length === 0){
+    list.innerHTML = "<p>Henüz kişi yok</p>";
+    select.innerHTML = "<option>Kişi yok</option>";
+    document.getElementById("selectedAmount").value = "";
+    prepareMessage();
+    return;
+  }
+
+  people.forEach(person => {
+    const div = document.createElement("div");
+    div.className = "person";
+
+    div.innerHTML = `
+      <div>
+        <input class="checkbox person-check" type="checkbox" value="${person.id}">
+        <b>${person.name}</b><br>
+        <small>+${person.phone}</small>
       </div>
-    </div>
-  </div>  <div class="toast" id="toast">Hazır</div><script>
-(function(){
-  const LS_KEY = "hakedis_mesaj_panel_temiz_v1";
-  const defaultState = {
-    company:{
-      name:"DELİVERA EXPRESS KURYE ARACILIK HİZMETLERİ TİCARET LİMİTED ŞİRKETİ",
-      taxOffice:"İSTİKLAL",
-      taxNo:"274 228 18 00",
-      address:"YENİŞEHİR / MERSİN",
-      accounting:"0530 339 72 01",
-      note:"E-Arşiv faturanızı muhasebe telefonuna kesinlikle iletiniz."
-    },
-    lastDates:{settlementDate:"",payDate:"",periodStart:"",periodEnd:""},
-    people:[]
-  };
+      <button class="danger" onclick="deletePerson(${person.id})">Sil</button>
+    `;
 
-  let state = loadState();
-  let selectedId = null;
-  let lastPreparedMessage = "";
+    list.appendChild(div);
 
-  const el = (id)=>document.getElementById(id);
-  const todayISO = ()=>new Date().toISOString().slice(0,10);
-  const uid = ()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
-  const esc = (s)=>String(s||"").replace(/[&<>'"]/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[m];});
-  const trDate = (iso)=>{ if(!iso) return "-"; const p=iso.split("-"); return p.length===3 ? `${p[2]}.${p[1]}.${p[0]}` : iso; };
-  const numberValue = (v)=>Number(String(v||0).replace(",",".").replace(/[^0-9.]/g,"")) || 0;
-  const money = (v)=>numberValue(v).toLocaleString("tr-TR") + " TL";
+    const option = document.createElement("option");
+    option.value = person.id;
+    option.textContent = person.name;
+    select.appendChild(option);
+  });
 
-  function loadState(){
-    try{ const raw = localStorage.getItem(LS_KEY); if(raw) return JSON.parse(raw); }catch(e){}
-    const copy = JSON.parse(JSON.stringify(defaultState));
-    copy.lastDates.settlementDate = todayISO();
-    return copy;
-  }
-  function saveState(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); updateStats(); }
-  function toast(msg){ const t=el("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(window.__toastTimer); window.__toastTimer=setTimeout(()=>t.classList.remove("show"),1800); }
+  loadSelectedAmount();
+  prepareMessage();
+}
 
-  function bindCompanyInputs(){
-    el("companyInput").value = state.company.name || "";
-    el("taxOfficeInput").value = state.company.taxOffice || "";
-    el("taxNoInput").value = state.company.taxNo || "";
-    el("addressInput").value = state.company.address || "";
-    el("accountingInput").value = state.company.accounting || "";
-    el("noteInput").value = state.company.note || "";
-  }
+function getSelectedPerson(){
+  const id = Number(document.getElementById("selectedPerson").value);
+  return people.find(p => p.id === id);
+}
 
-  function saveCompany(){
-    state.company.name = el("companyInput").value.trim();
-    state.company.taxOffice = el("taxOfficeInput").value.trim();
-    state.company.taxNo = el("taxNoInput").value.trim();
-    state.company.address = el("addressInput").value.trim();
-    state.company.accounting = el("accountingInput").value.trim();
-    state.company.note = el("noteInput").value.trim();
-    saveState(); toast("Firma bilgileri kaydedildi ✅");
-  }
+function loadSelectedAmount(){
+  const person = getSelectedPerson();
+  document.getElementById("selectedAmount").value = person ? person.amount || "" : "";
+}
 
-  function addPerson(){
-    const name = el("nameInput").value.trim();
-    const phone = el("phoneInput").value.trim();
-    if(!name){ toast("Ad soyad girmen lazım ⚠️"); return; }
-    state.people.push({id:uid(), name, phone, settlements:[]});
-    el("nameInput").value=""; el("phoneInput").value="";
-    saveState(); renderPeople(); toast("Kişi eklendi 👑");
-  }
+function saveSelectedAmount(){
+  const person = getSelectedPerson();
+  if(!person) return;
 
-  function addDemo(){
-    state.people.push(
-      {id:uid(), name:"Ahmet Yılmaz", phone:"0530 000 00 00", settlements:[]},
-      {id:uid(), name:"Mehmet Kaya", phone:"0540 000 00 00", settlements:[]},
-      {id:uid(), name:"Ali Demir", phone:"0550 000 00 00", settlements:[]}
-    );
-    saveState(); renderPeople(); toast("Örnek kişiler eklendi 🎯");
-  }
+  person.amount = document.getElementById("selectedAmount").value.trim();
+  savePeople();
+  prepareMessage();
+}
 
-  function getPerson(id){ return state.people.find(p=>p.id===id); }
-  function lastSettlement(p){ return p.settlements && p.settlements.length ? p.settlements[p.settlements.length-1] : null; }
+function getSelectedPeople(){
+  const checked = document.querySelectorAll(".person-check:checked");
+  return Array.from(checked).map(c => people.find(p => p.id === Number(c.value))).filter(Boolean);
+}
 
-  function openSettlement(id){
-    selectedId = id; lastPreparedMessage = "";
-    const p = getPerson(id); if(!p) return;
-    const last = lastSettlement(p) || {};
-    el("modalName").textContent = p.name;
-    el("modalPhone").textContent = "📞 " + (p.phone || "Telefon yok");
-    el("settlementDateInput").value = last.settlementDate || state.lastDates.settlementDate || todayISO();
-    el("payDateInput").value = last.payDate || state.lastDates.payDate || "";
-    el("periodStartInput").value = last.periodStart || state.lastDates.periodStart || "";
-    el("periodEndInput").value = last.periodEnd || state.lastDates.periodEnd || "";
-    el("amountInput").value = last.amount || "";
-    el("previewBox").textContent = "Tarihleri ve tutarı girip Mesajı Hazırla butonuna bas.";
-    el("waBtn").href = "#";
-    el("settlementModal").classList.add("show");
+function selectAllPeople(){
+  document.querySelectorAll(".person-check").forEach(c => c.checked = true);
+}
+
+function clearSelections(){
+  document.querySelectorAll(".person-check").forEach(c => c.checked = false);
+}
+
+function formatDateFull(dateValue){
+  if(!dateValue) return "";
+  const parts = dateValue.split("-");
+  return parts[2] + "." + parts[1] + "." + parts[0];
+}
+
+function formatDateShort(dateValue){
+  if(!dateValue) return "";
+  const parts = dateValue.split("-");
+  return parts[2] + "." + parts[1];
+}
+
+function getPeriodText(){
+  const start = document.getElementById("periodStart").value;
+  const end = document.getElementById("periodEnd").value;
+
+  if(!start || !end) return "AÇIKLAMA";
+
+  return formatDateShort(start) + "-" + formatDateFull(end);
+}
+
+function buildMessage(person){
+  const hakedisTarihi = formatDateFull(document.getElementById("hakedisDate").value);
+  const tutar = person.amount || "TUTAR";
+  const aciklama = getPeriodText();
+  const odemeGunu = formatDateFull(document.getElementById("paymentDate").value);
+  const template = document.getElementById("template").value;
+
+  return template
+    .replaceAll("{isim}", person.name)
+    .replaceAll("{hakedisTarihi}", hakedisTarihi || "HAKEDİŞ TARİHİ")
+    .replaceAll("{tutar}", tutar)
+    .replaceAll("{aciklama}", aciklama)
+    .replaceAll("{odemeGunu}", odemeGunu || "ÖDEME GÜNÜ");
+}
+
+function prepareMessage(){
+  const person = getSelectedPerson();
+
+  if(!person){
+    document.getElementById("preview").textContent = "Önce kişi ekle";
+    return "";
   }
 
-  function closeModal(){ el("settlementModal").classList.remove("show"); selectedId=null; }
+  const message = cleanMessage(buildMessage(person));
+  document.getElementById("preview").textContent = message;
+  return message;
+}
 
-  function buildMessage(p, s){
-    return `SAYIN YÜKLENİCİ(ESNAF KURYE):\n${p.name}\n\nHAKEDİŞİNİZ\n${trDate(s.settlementDate)} TARİHLİ\n${money(s.amount)} KDV DAHİL HİZMET BEDELİ\n\nAÇIKLAMA:\n${trDate(s.periodStart)} - ${trDate(s.periodEnd)} ÇALIŞMA DÖNEMİ\n\nFATURA ÖDEME GÜNÜ: ${trDate(s.payDate)}\n\nFATURA BİLGİLERİ\n${state.company.name}\nVD. ${state.company.taxOffice}\nVD.NO: ${state.company.taxNo}\n${state.company.address}\n\n${state.company.note}\nMuhasebe WP: ${state.company.accounting}`;
+function sendWhatsApp(){
+  const person = getSelectedPerson();
+
+  if(!person){
+    alert("Kişi seçilmedi");
+    return;
   }
 
-  function whatsappUrl(phone,message){
-    let p = String(phone||"").replace(/\D/g,"");
-    if(p.startsWith("0")) p = "90" + p.slice(1);
-    if(p && !p.startsWith("90")) p = "90" + p;
-    return p ? `https://wa.me/${p}?text=${encodeURIComponent(message)}` : `https://wa.me/?text=${encodeURIComponent(message)}`;
+  const message = cleanMessage(buildMessage(person));
+  const url = `https://wa.me/${person.phone}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
+}
+
+function sendBulkWhatsApp(){
+  const selectedPeople = getSelectedPeople();
+
+  if(selectedPeople.length === 0){
+    alert("Önce en az 1 kişi seç kanka");
+    return;
   }
 
-  function prepareMessage(){
-    const p = getPerson(selectedId); if(!p) return;
-    const settlement = {
-      settlementDate: el("settlementDateInput").value,
-      payDate: el("payDateInput").value,
-      periodStart: el("periodStartInput").value,
-      periodEnd: el("periodEndInput").value,
-      amount: el("amountInput").value.replace(/[^0-9.,]/g,"")
-    };
-    if(!settlement.settlementDate){ toast("Hakediş tarihi gir ⚠️"); return; }
-    if(!settlement.amount){ toast("Hakediş tutarı gir ⚠️"); return; }
-
-    state.lastDates = {
-      settlementDate:settlement.settlementDate,
-      payDate:settlement.payDate,
-      periodStart:settlement.periodStart,
-      periodEnd:settlement.periodEnd
-    };
-    if(!p.settlements) p.settlements=[];
-    p.settlements.push(settlement);
-    lastPreparedMessage = buildMessage(p, settlement);
-    el("previewBox").textContent = lastPreparedMessage;
-    el("waBtn").href = whatsappUrl(p.phone,lastPreparedMessage);
-    saveState(); renderPeople(); toast("Mesaj hazırlandı ✨");
+  if(!confirm(selectedPeople.length + " kişi için WhatsApp sekmeleri açılacak. Devam edilsin mi?")){
+    return;
   }
 
-  async function copyMessage(){
-    if(!lastPreparedMessage){ toast("Önce mesajı hazırla ⚠️"); return; }
-    try{ await navigator.clipboard.writeText(lastPreparedMessage); toast("Mesaj kopyalandı 📋"); }
-    catch(e){ toast("Kopyalama başarısız oldu ⚠️"); }
-  }
+  const tabs = selectedPeople.map(() => window.open("about:blank", "_blank"));
 
-  function deleteSelected(){
-    const p = getPerson(selectedId); if(!p) return;
-    if(!confirm(p.name + " silinsin mi?")) return;
-    state.people = state.people.filter(x=>x.id!==selectedId);
-    saveState(); renderPeople(); closeModal(); toast("Kişi silindi 🗑️");
-  }
+  selectedPeople.forEach((person, index) => {
+    const message = cleanMessage(buildMessage(person));
+    const url = `https://wa.me/${person.phone}?text=${encodeURIComponent(message)}`;
 
-  function renderPeople(){
-    const q = (el("searchInput").value || "").toLowerCase();
-    const list = el("peopleList");
-    const data = state.people.filter(p=>p.name.toLowerCase().includes(q) || String(p.phone||"").includes(q));
-    if(!data.length){ list.innerHTML = '<div class="empty">Henüz kişi yok. Önce kişi ekle 👆</div>'; updateStats(); return; }
-    list.innerHTML = data.map(p=>{
-      const last = lastSettlement(p);
-      const lastHtml = last ? `Son hakediş: <b>${esc(money(last.amount))}</b><br>${esc(trDate(last.settlementDate))}` : "Henüz hakediş girilmedi";
-      return `<div class="person" data-id="${esc(p.id)}"><div class="person-name">${esc(p.name)}</div><div class="person-phone">📞 ${esc(p.phone || "Telefon yok")}</div><div class="person-last">${lastHtml}</div></div>`;
-    }).join("");
-    list.querySelectorAll(".person").forEach(card=>card.addEventListener("click",()=>openSettlement(card.dataset.id)));
-    updateStats();
-  }
+    setTimeout(() => {
+      if(tabs[index]){
+        tabs[index].location.href = url;
+      }else{
+        alert("Tarayıcı bazı sekmeleri engelledi. Pop-up izni vermen gerekiyor.");
+      }
+    }, index * 900);
+  });
+}
 
-  function updateStats(){
-    const total = state.people.reduce((sum,p)=>{ const last=lastSettlement(p); return sum + (last ? numberValue(last.amount) : 0); },0);
-    const done = state.people.filter(p=>!!lastSettlement(p)).length;
-    el("statPeople").textContent = state.people.length;
-    el("statTotal").textContent = total.toLocaleString("tr-TR") + " TL";
-    el("statDone").textContent = done;
-    el("statLastDate").textContent = trDate(state.lastDates.settlementDate);
-  }
+function copyMessage(){
+  const message = prepareMessage();
 
-  function exportBackup(){
-    const blob = new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob); a.download = "hakedis-panel-yedek.json"; a.click();
-    URL.revokeObjectURL(a.href); toast("Yedek indirildi 📦");
-  }
-  function importBackup(ev){
-    const file = ev.target.files[0]; if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(){
-      try{ state = JSON.parse(reader.result); saveState(); bindCompanyInputs(); renderPeople(); toast("Yedek yüklendi ✅"); }
-      catch(e){ toast("Yedek okunamadı ⚠️"); }
-    };
-    reader.readAsText(file);
-  }
+  navigator.clipboard.writeText(message).then(() => {
+    alert("Mesaj kopyalandı ✅");
+  });
+}
 
-  el("addPersonBtn").addEventListener("click",addPerson);
-  el("demoBtn").addEventListener("click",addDemo);
-  el("saveCompanyBtn").addEventListener("click",saveCompany);
-  el("searchInput").addEventListener("input",renderPeople);
-  el("closeModalBtn").addEventListener("click",closeModal);
-  el("prepareBtn").addEventListener("click",prepareMessage);
-  el("copyBtn").addEventListener("click",copyMessage);
-  el("deleteBtn").addEventListener("click",deleteSelected);
-  el("backupBtn").addEventListener("click",exportBackup);
-  el("loadBackupBtn").addEventListener("click",()=>el("backupFile").click());
-  el("backupFile").addEventListener("change",importBackup);
-  el("settlementModal").addEventListener("click",function(e){ if(e.target===el("settlementModal")) closeModal(); });
+document.getElementById("hakedisDate").value = "2026-05-01";
+document.getElementById("periodStart").value = "2026-04-20";
+document.getElementById("periodEnd").value = "2026-04-26";
+document.getElementById("paymentDate").value = "2026-04-30";
 
-  bindCompanyInputs(); renderPeople();
-})();
-</script></body>
+renderPeople();
+</script>
+
+</body>
 </html>
