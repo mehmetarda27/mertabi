@@ -6,29 +6,219 @@
 <title>Delivera Muhasebe Hakediş Paneli</title>
 
 <style>
+:root{
+  --bg1:#050816;
+  --bg2:#081225;
+  --line:rgba(255,255,255,.16);
+  --text:#f8fafc;
+  --muted:#aab7cf;
+  --cyan:#38d9ff;
+}
+
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#07111f,#1d3557,#0b132b);color:white;padding:20px}
-.container{max-width:1200px;margin:auto}
-.hero,.card{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.35);margin-bottom:20px}
-h1{margin:0;font-size:32px}
-p{opacity:.85}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-label{display:block;font-weight:bold;font-size:14px;margin-top:8px}
-input,textarea,select{width:100%;padding:13px;border:none;outline:none;border-radius:14px;margin:8px 0 14px;font-size:15px}
-textarea{min-height:260px;resize:vertical}
-button{border:none;padding:13px 16px;border-radius:14px;font-weight:bold;cursor:pointer;margin:5px 4px 5px 0}
-.primary{background:#00d4ff;color:#06111d}
-.success{background:#37ff8b;color:#062011}
-.danger{background:#ff4d6d;color:white}
-.dark{background:#ffffff22;color:white}
-.person{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border-radius:14px;background:rgba(255,255,255,.08);margin-bottom:10px}
-.person small{opacity:.75}
-.checkbox{width:auto;margin-right:8px;transform:scale(1.2)}
-.preview{background:#07111f;border-radius:16px;padding:15px;white-space:pre-wrap;line-height:1.5;border:1px solid rgba(255,255,255,.12);min-height:250px}
-.list{max-height:520px;overflow:auto;padding-right:5px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.mini{font-size:13px;opacity:.75;margin-top:8px}
-@media(max-width:850px){.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}h1{font-size:25px}}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Inter,Arial,sans-serif;
+  color:var(--text);
+  padding:24px;
+  background:
+    radial-gradient(circle at 15% 10%,rgba(56,217,255,.25),transparent 30%),
+    radial-gradient(circle at 85% 20%,rgba(255,209,102,.13),transparent 28%),
+    radial-gradient(circle at 50% 100%,rgba(56,217,255,.10),transparent 34%),
+    linear-gradient(135deg,var(--bg1),var(--bg2));
+}
+
+.container{max-width:1250px;margin:auto}
+
+.hero{
+  background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.05));
+  border:1px solid var(--line);
+  border-radius:30px;
+  padding:28px;
+  box-shadow:0 30px 90px rgba(0,0,0,.45);
+  margin-bottom:22px;
+}
+
+.badge{
+  display:inline-flex;
+  padding:8px 13px;
+  border-radius:999px;
+  background:rgba(56,217,255,.12);
+  border:1px solid rgba(56,217,255,.35);
+  color:#bff4ff;
+  font-size:13px;
+  margin-bottom:12px;
+}
+
+h1{margin:0;font-size:34px}
+p{color:var(--muted);line-height:1.5}
+
+.grid{
+  display:grid;
+  grid-template-columns:.92fr 1.08fr;
+  gap:22px;
+}
+
+.card{
+  background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.06));
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:22px;
+  box-shadow:0 24px 70px rgba(0,0,0,.35);
+  backdrop-filter:blur(18px);
+}
+
+h2{margin:0 0 14px;font-size:21px}
+
+label{
+  display:block;
+  font-weight:700;
+  font-size:13px;
+  color:#dbe8ff;
+  margin-top:10px;
+}
+
+input,textarea,select{
+  width:100%;
+  padding:14px 15px;
+  border-radius:16px;
+  margin:8px 0 13px;
+  font-size:15px;
+  color:#ffffff !important;
+  background:#071225 !important;
+  border:1px solid rgba(255,255,255,.18);
+  outline:none;
+  color-scheme:dark;
+}
+
+input::placeholder{color:#8fa1bd}
+
+select option{
+  background:#071225;
+  color:white;
+}
+
+/* 🔥 TARİH BUTONU PREMIUM MAVİ */
+input[type="date"]{
+  position:relative;
+  padding-right:52px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator{
+  opacity:1;
+  cursor:pointer;
+  width:24px;
+  height:24px;
+  padding:8px;
+  border-radius:12px;
+  background:
+    linear-gradient(135deg,#38d9ff,#0ea5e9);
+  filter:none;
+  box-shadow:0 8px 20px rgba(56,217,255,.25);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover{
+  filter:brightness(1.12);
+}
+
+input:focus,textarea:focus,select:focus{
+  border-color:rgba(56,217,255,.85);
+  box-shadow:0 0 0 4px rgba(56,217,255,.12);
+}
+
+textarea{
+  min-height:245px;
+  resize:vertical;
+  line-height:1.35;
+}
+
+button{
+  border:none;
+  padding:13px 16px;
+  border-radius:16px;
+  font-weight:800;
+  cursor:pointer;
+  margin:5px 4px 5px 0;
+  transition:.2s;
+  background:linear-gradient(135deg,#38d9ff,#0ea5e9) !important;
+  color:#03111e !important;
+  border:1px solid rgba(56,217,255,.65) !important;
+  box-shadow:0 10px 25px rgba(56,217,255,.18);
+}
+
+button:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.08);
+}
+
+.person{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:14px;
+  border-radius:18px;
+  background:rgba(4,10,24,.58);
+  border:1px solid rgba(255,255,255,.11);
+  margin-bottom:10px;
+}
+
+.person small{color:var(--muted)}
+
+.checkbox{
+  width:auto;
+  margin-right:8px;
+  transform:scale(1.2);
+}
+
+.preview{
+  background:rgba(4,10,24,.78);
+  border-radius:20px;
+  padding:17px;
+  white-space:pre-wrap;
+  line-height:1.45;
+  border:1px solid rgba(255,255,255,.13);
+  min-height:250px;
+}
+
+.list{
+  max-height:520px;
+  overflow:auto;
+  padding-right:5px;
+}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.mini{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:8px;
+}
+
+hr{
+  border:0;
+  border-top:1px solid rgba(255,255,255,.13);
+  margin:18px 0;
+}
+
+.action-bar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+@media(max-width:900px){
+  body{padding:14px}
+  .grid{grid-template-columns:1fr}
+  .row{grid-template-columns:1fr}
+  h1{font-size:27px}
+}
 </style>
 </head>
 
@@ -36,8 +226,9 @@ button{border:none;padding:13px 16px;border-radius:14px;font-weight:bold;cursor:
 <div class="container">
 
 <div class="hero">
-<h1>💼 Delivera Muhasebe Hakediş Paneli</h1>
-<p>Kişiyi kaydet sağ taraftan haftalık hakediş tutarını gir WhatsApp mesajını hazırla 🚀</p>
+  <div class="badge">✨ Premium Hakediş Otomasyon Paneli</div>
+  <h1>💼 Delivera Muhasebe Hakediş Paneli</h1>
+  <p>Kişiyi kaydet sağ taraftan haftalık hakediş tutarını gir WhatsApp mesajlarını profesyonel şekilde hazırla 🚀</p>
 </div>
 
 <div class="grid">
@@ -51,16 +242,16 @@ button{border:none;padding:13px 16px;border-radius:14px;font-weight:bold;cursor:
 <label>Telefon</label>
 <input id="phone" placeholder="Örn: 05551234567">
 
-<button class="primary" onclick="addPerson()">Kişiyi Kaydet</button>
+<button onclick="addPerson()">Kişiyi Kaydet</button>
 
-<hr style="border-color:#ffffff22">
+<hr>
 
 <div class="row">
-<button class="dark" onclick="selectAllPeople()">Tümünü Seç</button>
-<button class="dark" onclick="clearSelections()">Seçimi Temizle</button>
+<button onclick="selectAllPeople()">Tümünü Seç</button>
+<button onclick="clearSelections()">Seçimi Temizle</button>
 </div>
 
-<h2>📋 Kayıtlı Kişiler</h2>
+<h2 style="margin-top:18px">📋 Kayıtlı Kişiler</h2>
 <div id="personList" class="list"></div>
 </div>
 
@@ -119,9 +310,11 @@ Muhasebe WP 0530 339 72 01</textarea>
 
 <br>
 
-<button class="success" onclick="sendWhatsApp()">Tek Kişiye WhatsApp Aç</button>
-<button class="primary" onclick="sendBulkWhatsApp()">Seçili Kişileri Sekme Sekme Aç</button>
-<button class="dark" onclick="copyMessage()">Mesajı Kopyala</button>
+<div class="action-bar">
+<button onclick="sendWhatsApp()">Tek Kişiye WhatsApp Aç</button>
+<button onclick="sendBulkWhatsApp()">Seçili Kişileri Sekme Sekme Aç</button>
+<button onclick="copyMessage()">Mesajı Kopyala</button>
+</div>
 
 <div class="mini">Not: Hakediş tutarı seçili kişiye özel kaydedilir ✅</div>
 </div>
@@ -176,7 +369,6 @@ function addPerson(){
 
 function deletePerson(id){
   if(!confirm("Bu kişiyi silmek istiyor musun?")) return;
-
   people = people.filter(p => p.id !== id);
   savePeople();
   renderPeople();
@@ -207,7 +399,7 @@ function renderPeople(){
         <b>${person.name}</b><br>
         <small>+${person.phone}</small>
       </div>
-      <button class="danger" onclick="deletePerson(${person.id})">Sil</button>
+      <button onclick="deletePerson(${person.id})">Sil</button>
     `;
 
     list.appendChild(div);
