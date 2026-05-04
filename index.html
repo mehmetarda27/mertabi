@@ -100,7 +100,6 @@ select option{
   color:white;
 }
 
-/* 🔥 TARİH BUTONU PREMIUM MAVİ */
 input[type="date"]{
   position:relative;
   padding-right:52px;
@@ -113,14 +112,9 @@ input[type="date"]::-webkit-calendar-picker-indicator{
   height:24px;
   padding:8px;
   border-radius:12px;
-  background:
-    linear-gradient(135deg,#38d9ff,#0ea5e9);
+  background:linear-gradient(135deg,#38d9ff,#0ea5e9);
   filter:none;
   box-shadow:0 8px 20px rgba(56,217,255,.25);
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator:hover{
-  filter:brightness(1.12);
 }
 
 input:focus,textarea:focus,select:focus{
@@ -151,6 +145,12 @@ button{
 button:hover{
   transform:translateY(-1px);
   filter:brightness(1.08);
+}
+
+button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+  transform:none;
 }
 
 .person{
@@ -199,6 +199,16 @@ button:hover{
   font-size:13px;
   color:var(--muted);
   margin-top:8px;
+}
+
+.status-box{
+  margin-top:12px;
+  padding:13px;
+  border-radius:16px;
+  background:rgba(56,217,255,.10);
+  border:1px solid rgba(56,217,255,.25);
+  color:#dff8ff;
+  font-size:14px;
 }
 
 hr{
@@ -312,11 +322,16 @@ Muhasebe WP 0530 339 72 01</textarea>
 
 <div class="action-bar">
 <button onclick="sendWhatsApp()">Tek Kişiye WhatsApp Aç</button>
-<button onclick="sendBulkWhatsApp()">Seçili Kişileri Sekme Sekme Aç</button>
+<button onclick="startBulkQueue()">Toplu Gönderimi Başlat</button>
+<button id="nextBtn" onclick="openNextPerson()" disabled>Sonraki Kişiyi Aç</button>
 <button onclick="copyMessage()">Mesajı Kopyala</button>
 </div>
 
-<div class="mini">Not: Hakediş tutarı seçili kişiye özel kaydedilir ✅</div>
+<div id="bulkStatus" class="status-box">Toplu gönderim hazır değil</div>
+
+<div class="mini">
+Pop-up engeline takılmamak için toplu gönderimde her seferinde tek kişi açılır ✅
+</div>
 </div>
 
 </div>
@@ -324,6 +339,8 @@ Muhasebe WP 0530 339 72 01</textarea>
 
 <script>
 let people = JSON.parse(localStorage.getItem("people")) || [];
+let bulkQueue = [];
+let bulkIndex = 0;
 
 function savePeople(){
   localStorage.setItem("people", JSON.stringify(people));
@@ -444,6 +461,9 @@ function selectAllPeople(){
 
 function clearSelections(){
   document.querySelectorAll(".person-check").forEach(c => c.checked = false);
+  bulkQueue = [];
+  bulkIndex = 0;
+  updateBulkStatus();
 }
 
 function formatDateFull(dateValue){
@@ -495,6 +515,12 @@ function prepareMessage(){
   return message;
 }
 
+function openWhatsAppForPerson(person){
+  const message = cleanMessage(buildMessage(person));
+  const url = `https://wa.me/${person.phone}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
+}
+
 function sendWhatsApp(){
   const person = getSelectedPerson();
 
@@ -503,37 +529,68 @@ function sendWhatsApp(){
     return;
   }
 
-  const message = cleanMessage(buildMessage(person));
-  const url = `https://wa.me/${person.phone}?text=${encodeURIComponent(message)}`;
-  window.open(url, "_blank");
+  openWhatsAppForPerson(person);
 }
 
-function sendBulkWhatsApp(){
-  const selectedPeople = getSelectedPeople();
+function startBulkQueue(){
+  bulkQueue = getSelectedPeople();
+  bulkIndex = 0;
 
-  if(selectedPeople.length === 0){
+  if(bulkQueue.length === 0){
     alert("Önce en az 1 kişi seç kanka");
+    updateBulkStatus();
     return;
   }
 
-  if(!confirm(selectedPeople.length + " kişi için WhatsApp sekmeleri açılacak. Devam edilsin mi?")){
+  document.getElementById("nextBtn").disabled = false;
+  updateBulkStatus();
+
+  openNextPerson();
+}
+
+function openNextPerson(){
+  if(bulkQueue.length === 0){
+    alert("Önce toplu gönderimi başlat");
+    updateBulkStatus();
     return;
   }
 
-  const tabs = selectedPeople.map(() => window.open("about:blank", "_blank"));
+  if(bulkIndex >= bulkQueue.length){
+    alert("Tüm seçili kişiler açıldı ✅");
+    document.getElementById("nextBtn").disabled = true;
+    updateBulkStatus();
+    return;
+  }
 
-  selectedPeople.forEach((person, index) => {
-    const message = cleanMessage(buildMessage(person));
-    const url = `https://wa.me/${person.phone}?text=${encodeURIComponent(message)}`;
+  const person = bulkQueue[bulkIndex];
+  bulkIndex++;
 
-    setTimeout(() => {
-      if(tabs[index]){
-        tabs[index].location.href = url;
-      }else{
-        alert("Tarayıcı bazı sekmeleri engelledi. Pop-up izni vermen gerekiyor.");
-      }
-    }, index * 900);
-  });
+  updateBulkStatus();
+  openWhatsAppForPerson(person);
+
+  if(bulkIndex >= bulkQueue.length){
+    document.getElementById("nextBtn").disabled = true;
+  }
+}
+
+function updateBulkStatus(){
+  const status = document.getElementById("bulkStatus");
+  const nextBtn = document.getElementById("nextBtn");
+
+  if(bulkQueue.length === 0){
+    status.textContent = "Toplu gönderim hazır değil";
+    nextBtn.disabled = true;
+    return;
+  }
+
+  if(bulkIndex >= bulkQueue.length){
+    status.textContent = `Toplu gönderim tamamlandı ✅ ${bulkQueue.length}/${bulkQueue.length}`;
+    nextBtn.disabled = true;
+    return;
+  }
+
+  status.textContent = `Sıradaki kişi ${bulkIndex + 1}/${bulkQueue.length}: ${bulkQueue[bulkIndex].name}`;
+  nextBtn.disabled = false;
 }
 
 function copyMessage(){
@@ -550,6 +607,7 @@ document.getElementById("periodEnd").value = "2026-04-26";
 document.getElementById("paymentDate").value = "2026-04-30";
 
 renderPeople();
+updateBulkStatus();
 </script>
 
 </body>
