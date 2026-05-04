@@ -57,7 +57,7 @@ p{color:var(--muted);line-height:1.5}
 
 .grid{
   display:grid;
-  grid-template-columns:.92fr 1.08fr;
+  grid-template-columns:.85fr 1.15fr;
   gap:22px;
 }
 
@@ -80,7 +80,7 @@ label{
   margin-top:10px;
 }
 
-input,textarea,select{
+input,select{
   width:100%;
   padding:14px 15px;
   border-radius:16px;
@@ -94,11 +94,6 @@ input,textarea,select{
 }
 
 input::placeholder{color:#8fa1bd}
-
-select option{
-  background:#071225;
-  color:white;
-}
 
 input[type="date"]{
   position:relative;
@@ -117,15 +112,9 @@ input[type="date"]::-webkit-calendar-picker-indicator{
   box-shadow:0 8px 20px rgba(56,217,255,.25);
 }
 
-input:focus,textarea:focus,select:focus{
+input:focus,select:focus{
   border-color:rgba(56,217,255,.85);
   box-shadow:0 0 0 4px rgba(56,217,255,.12);
-}
-
-textarea{
-  min-height:245px;
-  resize:vertical;
-  line-height:1.35;
 }
 
 button{
@@ -153,11 +142,17 @@ button:disabled{
   transform:none;
 }
 
-.person{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
   gap:10px;
+}
+
+.person{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:12px;
+  align-items:center;
   padding:14px;
   border-radius:18px;
   background:rgba(4,10,24,.58);
@@ -169,36 +164,19 @@ button:disabled{
 
 .checkbox{
   width:auto;
-  margin-right:8px;
+  margin:0;
   transform:scale(1.2);
 }
 
-.preview{
-  background:rgba(4,10,24,.78);
-  border-radius:20px;
-  padding:17px;
-  white-space:pre-wrap;
-  line-height:1.45;
-  border:1px solid rgba(255,255,255,.13);
-  min-height:250px;
+.amount-box{
+  max-width:140px;
+  margin:0;
 }
 
 .list{
-  max-height:520px;
+  max-height:540px;
   overflow:auto;
   padding-right:5px;
-}
-
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.mini{
-  font-size:13px;
-  color:var(--muted);
-  margin-top:8px;
 }
 
 .status-box{
@@ -209,6 +187,16 @@ button:disabled{
   border:1px solid rgba(56,217,255,.25);
   color:#dff8ff;
   font-size:14px;
+}
+
+.preview{
+  background:rgba(4,10,24,.78);
+  border-radius:20px;
+  padding:17px;
+  white-space:pre-wrap;
+  line-height:1.45;
+  border:1px solid rgba(255,255,255,.13);
+  min-height:180px;
 }
 
 hr{
@@ -223,10 +211,18 @@ hr{
   gap:6px;
 }
 
+.mini{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:8px;
+}
+
 @media(max-width:900px){
   body{padding:14px}
   .grid{grid-template-columns:1fr}
   .row{grid-template-columns:1fr}
+  .person{grid-template-columns:auto 1fr}
+  .amount-box{grid-column:1 / -1;max-width:100%}
   h1{font-size:27px}
 }
 </style>
@@ -236,9 +232,9 @@ hr{
 <div class="container">
 
 <div class="hero">
-  <div class="badge">✨ Premium Hakediş Otomasyon Paneli</div>
-  <h1>💼 Delivera Muhasebe Hakediş Paneli</h1>
-  <p>Kişiyi kaydet sağ taraftan haftalık hakediş tutarını gir WhatsApp mesajlarını profesyonel şekilde hazırla 🚀</p>
+  <div class="badge">✨ Sade Premium Muhasebe Modu</div>
+  <h1>💼 Delivera Hakediş Paneli</h1>
+  <p>Kişileri ekle, tarihleri seç, herkesin tutarını yaz, WhatsApp mesajlarını sırayla aç 🚀</p>
 </div>
 
 <div class="grid">
@@ -266,65 +262,43 @@ hr{
 </div>
 
 <div class="card">
-<h2>🧾 Hakediş Mesajı Hazırla</h2>
-
-<label>Tekli Önizleme İçin Kişi Seç</label>
-<select id="selectedPerson" onchange="loadSelectedAmount(); prepareMessage();"></select>
-
-<label>Seçili Kişinin Bu Haftaki Hakediş Tutarı</label>
-<input id="selectedAmount" placeholder="Örn: 7200" oninput="saveSelectedAmount()">
+<h2>🧾 Haftalık Hakediş Bilgileri</h2>
 
 <label>Hakediş Tarihi</label>
-<input id="hakedisDate" type="date" onchange="prepareMessage()">
+<input id="hakedisDate" type="date" onchange="preparePreview()">
 
 <div class="row">
 <div>
 <label>Çalışma Başlangıç Tarihi</label>
-<input id="periodStart" type="date" onchange="prepareMessage()">
+<input id="periodStart" type="date" onchange="preparePreview()">
 </div>
 
 <div>
 <label>Çalışma Bitiş Tarihi</label>
-<input id="periodEnd" type="date" onchange="prepareMessage()">
+<input id="periodEnd" type="date" onchange="preparePreview()">
 </div>
 </div>
 
 <label>Fatura Ödeme Günü</label>
-<input id="paymentDate" type="date" onchange="prepareMessage()">
+<input id="paymentDate" type="date" onchange="preparePreview()">
 
-<label>Mesaj Şablonu</label>
-<textarea id="template" oninput="prepareMessage()">SAYIN YÜKLENİCİ ESNAF KURYE
-{isim}
+<h2 style="margin-top:18px">💰 Kişi Tutarları</h2>
+<div class="mini">Her kişinin yanına o haftaki hakediş tutarını yaz. Seçili kişiler gönderilir.</div>
 
-HAKEDİŞİNİZ
-{hakedisTarihi} TARİHLİ
-{tutar} TL KDV DAHİL HİZMET BEDELİ
+<div id="amountList" class="list"></div>
 
-AÇIKLAMA
-{aciklama}
-
-FATURA ÖDEME GÜNÜ
-{odemeGunu}
-
-FATURA BİLGİLERİ
-DELİVERA EKSPRESS KURYE ARACILIK HİZMETLERİ TİCARET LİMİTED ŞİRKETİ
-VD İSTİKLAL
-VD NO 274 228 18 00
-YENİŞEHİR MERSİN
-
-E Arşiv faturanızı muhasebe telefonuna kesinlikle iletiniz
-Muhasebe WP 0530 339 72 01</textarea>
+<hr>
 
 <h3>📨 Önizleme</h3>
-<div id="preview" class="preview">Mesaj burada görünecek</div>
+<div id="preview" class="preview">Önizleme burada görünecek</div>
 
 <br>
 
 <div class="action-bar">
-<button onclick="sendWhatsApp()">Tek Kişiye WhatsApp Aç</button>
+<button onclick="sendSinglePreview()">Önizlenen Kişiye WhatsApp Aç</button>
 <button onclick="startBulkQueue()">Toplu Gönderimi Başlat</button>
 <button id="nextBtn" onclick="openNextPerson()" disabled>Sonraki Kişiyi Aç</button>
-<button onclick="copyMessage()">Mesajı Kopyala</button>
+<button onclick="copyPreview()">Mesajı Kopyala</button>
 </div>
 
 <div id="bulkStatus" class="status-box">Toplu gönderim hazır değil</div>
@@ -392,77 +366,97 @@ function deletePerson(id){
 }
 
 function renderPeople(){
-  const list = document.getElementById("personList");
-  const select = document.getElementById("selectedPerson");
+  const personList = document.getElementById("personList");
+  const amountList = document.getElementById("amountList");
 
-  list.innerHTML = "";
-  select.innerHTML = "";
+  personList.innerHTML = "";
+  amountList.innerHTML = "";
 
   if(people.length === 0){
-    list.innerHTML = "<p>Henüz kişi yok</p>";
-    select.innerHTML = "<option>Kişi yok</option>";
-    document.getElementById("selectedAmount").value = "";
-    prepareMessage();
+    personList.innerHTML = "<p>Henüz kişi yok</p>";
+    amountList.innerHTML = "<p>Önce kişi ekle</p>";
+    preparePreview();
     return;
   }
 
   people.forEach(person => {
-    const div = document.createElement("div");
-    div.className = "person";
-
-    div.innerHTML = `
+    const left = document.createElement("div");
+    left.className = "person";
+    left.innerHTML = `
+      <input class="checkbox person-check" type="checkbox" value="${person.id}" onchange="preparePreview(); updateBulkStatus();">
       <div>
-        <input class="checkbox person-check" type="checkbox" value="${person.id}">
         <b>${person.name}</b><br>
         <small>+${person.phone}</small>
       </div>
       <button onclick="deletePerson(${person.id})">Sil</button>
     `;
+    personList.appendChild(left);
 
-    list.appendChild(div);
-
-    const option = document.createElement("option");
-    option.value = person.id;
-    option.textContent = person.name;
-    select.appendChild(option);
+    const right = document.createElement("div");
+    right.className = "person";
+    right.innerHTML = `
+      <input class="checkbox person-check-right" type="checkbox" value="${person.id}" onchange="syncChecksFromRight(${person.id}, this.checked); preparePreview(); updateBulkStatus();">
+      <div>
+        <b>${person.name}</b><br>
+        <small>Bu haftaki tutar</small>
+      </div>
+      <input class="amount-box" placeholder="7200" value="${person.amount || ""}" oninput="updatePersonAmount(${person.id}, this.value)">
+    `;
+    amountList.appendChild(right);
   });
 
-  loadSelectedAmount();
-  prepareMessage();
+  preparePreview();
+  updateBulkStatus();
 }
 
-function getSelectedPerson(){
-  const id = Number(document.getElementById("selectedPerson").value);
-  return people.find(p => p.id === id);
+function syncChecksFromRight(id, checked){
+  const leftCheck = document.querySelector(`.person-check[value="${id}"]`);
+  if(leftCheck) leftCheck.checked = checked;
 }
 
-function loadSelectedAmount(){
-  const person = getSelectedPerson();
-  document.getElementById("selectedAmount").value = person ? person.amount || "" : "";
+function syncChecksFromLeft(){
+  document.querySelectorAll(".person-check").forEach(ch => {
+    const rightCheck = document.querySelector(`.person-check-right[value="${ch.value}"]`);
+    if(rightCheck) rightCheck.checked = ch.checked;
+  });
 }
 
-function saveSelectedAmount(){
-  const person = getSelectedPerson();
+function updatePersonAmount(id, value){
+  const person = people.find(p => p.id === id);
   if(!person) return;
 
-  person.amount = document.getElementById("selectedAmount").value.trim();
+  person.amount = value.trim();
   savePeople();
-  prepareMessage();
+  preparePreview();
 }
 
 function getSelectedPeople(){
+  syncChecksFromLeft();
   const checked = document.querySelectorAll(".person-check:checked");
-  return Array.from(checked).map(c => people.find(p => p.id === Number(c.value))).filter(Boolean);
+  return Array.from(checked)
+    .map(c => people.find(p => p.id === Number(c.value)))
+    .filter(Boolean);
+}
+
+function getFirstSelectedPerson(){
+  const selected = getSelectedPeople();
+  if(selected.length > 0) return selected[0];
+  return people[0] || null;
 }
 
 function selectAllPeople(){
   document.querySelectorAll(".person-check").forEach(c => c.checked = true);
+  document.querySelectorAll(".person-check-right").forEach(c => c.checked = true);
+  preparePreview();
+  updateBulkStatus();
 }
 
 function clearSelections(){
   document.querySelectorAll(".person-check").forEach(c => c.checked = false);
+  document.querySelectorAll(".person-check-right").forEach(c => c.checked = false);
   bulkQueue = [];
   bulkIndex = 0;
+  preparePreview();
   updateBulkStatus();
 }
 
@@ -488,44 +482,58 @@ function getPeriodText(){
 }
 
 function buildMessage(person){
-  const hakedisTarihi = formatDateFull(document.getElementById("hakedisDate").value);
-  const tutar = person.amount || "TUTAR";
+  const hakedisTarihi = formatDateFull(document.getElementById("hakedisDate").value) || "HAKEDİŞ TARİHİ";
+  const odemeGunu = formatDateFull(document.getElementById("paymentDate").value) || "ÖDEME GÜNÜ";
   const aciklama = getPeriodText();
-  const odemeGunu = formatDateFull(document.getElementById("paymentDate").value);
-  const template = document.getElementById("template").value;
+  const tutar = person.amount || "TUTAR";
 
-  return template
-    .replaceAll("{isim}", person.name)
-    .replaceAll("{hakedisTarihi}", hakedisTarihi || "HAKEDİŞ TARİHİ")
-    .replaceAll("{tutar}", tutar)
-    .replaceAll("{aciklama}", aciklama)
-    .replaceAll("{odemeGunu}", odemeGunu || "ÖDEME GÜNÜ");
+  return cleanMessage(`SAYIN YÜKLENİCİ ESNAF KURYE
+${person.name}
+
+HAKEDİŞİNİZ
+${hakedisTarihi} TARİHLİ
+${tutar} TL KDV DAHİL HİZMET BEDELİ
+
+AÇIKLAMA
+${aciklama}
+
+FATURA ÖDEME GÜNÜ
+${odemeGunu}
+
+FATURA BİLGİLERİ
+DELİVERA EKSPRESS KURYE ARACILIK HİZMETLERİ TİCARET LİMİTED ŞİRKETİ
+VD İSTİKLAL
+VD NO 274 228 18 00
+YENİŞEHİR MERSİN
+
+E Arşiv faturanızı muhasebe telefonuna kesinlikle iletiniz
+Muhasebe WP 0530 339 72 01`);
 }
 
-function prepareMessage(){
-  const person = getSelectedPerson();
+function preparePreview(){
+  const person = getFirstSelectedPerson();
 
   if(!person){
     document.getElementById("preview").textContent = "Önce kişi ekle";
     return "";
   }
 
-  const message = cleanMessage(buildMessage(person));
+  const message = buildMessage(person);
   document.getElementById("preview").textContent = message;
   return message;
 }
 
 function openWhatsAppForPerson(person){
-  const message = cleanMessage(buildMessage(person));
+  const message = buildMessage(person);
   const url = `https://wa.me/${person.phone}?text=${encodeURIComponent(message)}`;
   window.open(url, "_blank");
 }
 
-function sendWhatsApp(){
-  const person = getSelectedPerson();
+function sendSinglePreview(){
+  const person = getFirstSelectedPerson();
 
   if(!person){
-    alert("Kişi seçilmedi");
+    alert("Önce kişi ekle veya seç");
     return;
   }
 
@@ -544,7 +552,6 @@ function startBulkQueue(){
 
   document.getElementById("nextBtn").disabled = false;
   updateBulkStatus();
-
   openNextPerson();
 }
 
@@ -577,8 +584,13 @@ function updateBulkStatus(){
   const status = document.getElementById("bulkStatus");
   const nextBtn = document.getElementById("nextBtn");
 
+  if(!status || !nextBtn) return;
+
   if(bulkQueue.length === 0){
-    status.textContent = "Toplu gönderim hazır değil";
+    const selectedCount = getSelectedPeople().length;
+    status.textContent = selectedCount > 0
+      ? `${selectedCount} kişi seçili. Toplu gönderimi başlatabilirsin.`
+      : "Toplu gönderim hazır değil";
     nextBtn.disabled = true;
     return;
   }
@@ -593,8 +605,8 @@ function updateBulkStatus(){
   nextBtn.disabled = false;
 }
 
-function copyMessage(){
-  const message = prepareMessage();
+function copyPreview(){
+  const message = preparePreview();
 
   navigator.clipboard.writeText(message).then(() => {
     alert("Mesaj kopyalandı ✅");
@@ -607,7 +619,6 @@ document.getElementById("periodEnd").value = "2026-04-26";
 document.getElementById("paymentDate").value = "2026-04-30";
 
 renderPeople();
-updateBulkStatus();
 </script>
 
 </body>
